@@ -1,0 +1,9 @@
+JayDeBeApi==1.2.3
+python-dotenv==1.0.0
+loguru==0.7.2
+pyodbc==4.0.34
+SQLAlchemy>=2.0
+sqlalchemy-iris==0.10.0
+pydantic==2.3.0
+pydantic-settings==2.2.1
+pandas>=2.0.0
