@@ -1,6 +1,6 @@
 import jaydebeapi
 from loguru import logger
-from sqlalchemy import create_engine,  MetaData
+from sqlalchemy import create_engine,  MetaData, Engine
 import sqlite3
 import pandas as pd
 import json 
@@ -13,6 +13,14 @@ load_dotenv()
 
 # TODO load from config
 LOGGING = True
+
+class IRISConnection():
+
+    def __init__(self, config: Configuration):
+        self.engine = get_alchemy_engine(config)
+
+    def load_metadata(self):
+        self.metadata = get_alchemy_engine(self.config, engine=self.engine)
 
 ###############################################################################
 # METADATA FUNCTIONS
@@ -35,15 +43,17 @@ def get_metadata(config: Configuration = None, server: Server = None):
 
     return metadata, alchemy_metadata
 
-def get_metadata_alchemy(config: Configuration = None, server: Server = None):
+def get_metadata_alchemy(config: Configuration = None, server: Server = None, engine: Engine = None):
     
     if config:
         server = get_from_list(config.servers, config.src_server)
     
     if not server:
         raise Exception("Context, Config or Server nust be provided to get active db server")
-    connection_url = create_connection_url(server)
-    engine = create_engine(connection_url)
+    
+    if not engine:
+        connection_url = create_connection_url(server)
+        engine = create_engine(connection_url)
     
     print(f"Connecting to engine {engine.url} : {engine.connect()}")
     metadata_obj = MetaData()
